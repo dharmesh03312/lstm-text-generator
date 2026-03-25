@@ -11,18 +11,16 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 
 # ==============================
-# 2. Load & Clean Data
+#  Load & Clean Data
 # ==============================
 with open("data/shakespeare.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
-# Remove Gutenberg header/footer (optional but better)
 start = text.lower().find("start of")
 end = text.lower().find("end of")
 if start != -1 and end != -1:
     text = text[start:end]
 
-# Lowercase + remove punctuation
 text = text.lower()
 text = text.translate(str.maketrans('', '', string.punctuation))
 
@@ -30,7 +28,7 @@ print("Sample text:\n", text[:300])
 
 
 # ==============================
-# 3. Tokenization
+#  Tokenization
 # ==============================
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts([text])
@@ -40,9 +38,9 @@ print("Total words:", total_words)
 
 
 # ==============================
-# 4. Create Sequences
+#  Create Sequences
 # ==============================
-max_len = 20   # limit sequence size
+max_len = 20 
 
 input_sequences = []
 
@@ -57,7 +55,7 @@ print("Total sequences before limit:", len(input_sequences))
 
 
 # ==============================
-# 5. LIMIT DATA (IMPORTANT)
+#  LIMIT DATA (IMPORTANT)
 # ==============================
 input_sequences = input_sequences[:50000]  
 
@@ -65,7 +63,7 @@ print("Total sequences after limit:", len(input_sequences))
 
 
 # ==============================
-# 6. Padding
+# Padding
 # ==============================
 max_seq_len = max(len(seq) for seq in input_sequences)
 
@@ -75,14 +73,14 @@ input_sequences = np.array(
 
 
 # ==============================
-# 7. Split X and y
+#  Split X and y
 # ==============================
 X = input_sequences[:, :-1]
 y = input_sequences[:, -1]   
 
 
 # ==============================
-# 8. Build Model
+# Build Model
 # ==============================
 model = Sequential([
     Embedding(total_words, 100, input_length=max_seq_len - 1),
@@ -101,7 +99,7 @@ model.summary()
 
 
 # ==============================
-# 9. Train Model
+#  Train Model
 # ==============================
 early_stop = EarlyStopping(monitor='loss', patience=3)
 
@@ -114,7 +112,7 @@ history = model.fit(
 
 
 # ==============================
-# 10. Helper Functions
+# Helper Functions
 # ==============================
 index_to_word = {index: word for word, index in tokenizer.word_index.items()}
 
@@ -148,7 +146,7 @@ def generate_text(seed_text, next_words=20):
 
 
 # ==============================
-# 11. Generate Text
+# Generate Text
 # ==============================
 while True:
     seed = input("\nEnter seed text (type 'exit' to quit): ")
@@ -168,7 +166,7 @@ while True:
 
 
 # ==============================
-# 12. Plot Loss
+#  Plot Loss
 # ==============================
 plt.plot(history.history['loss'])
 plt.title('Training Loss')
@@ -178,7 +176,7 @@ plt.show()
 
 
 # ==============================
-# 13. Save Model
+#  Save Model
 # ==============================
 model.save("lstm_text_model.h5")
 print("model saved")
