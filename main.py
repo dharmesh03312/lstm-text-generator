@@ -1,6 +1,3 @@
-# ==============================
-# 1. Imports
-# ==============================
 import numpy as np
 import tensorflow as tf
 import string
@@ -62,7 +59,7 @@ print("Total sequences before limit:", len(input_sequences))
 # ==============================
 # 5. LIMIT DATA (IMPORTANT)
 # ==============================
-input_sequences = input_sequences[:50000]   # 🔥 reduce memory usage
+input_sequences = input_sequences[:50000]  
 
 print("Total sequences after limit:", len(input_sequences))
 
@@ -81,7 +78,7 @@ input_sequences = np.array(
 # 7. Split X and y
 # ==============================
 X = input_sequences[:, :-1]
-y = input_sequences[:, -1]   # ⚠️ NO one-hot encoding
+y = input_sequences[:, -1]   
 
 
 # ==============================
@@ -95,7 +92,7 @@ model = Sequential([
 ])
 
 model.compile(
-    loss='sparse_categorical_crossentropy',  # 🔥 memory-efficient
+    loss='sparse_categorical_crossentropy',  
     optimizer='adam',
     metrics=['accuracy']
 )
@@ -110,7 +107,7 @@ early_stop = EarlyStopping(monitor='loss', patience=3)
 
 history = model.fit(
     X, y,
-    epochs=30,           # keep small for speed
+    epochs=30,          
     batch_size=128,
     callbacks=[early_stop]
 )
@@ -128,7 +125,7 @@ def sample_with_temperature(preds, temperature=0.6):
     preds = np.log(preds + 1e-8) / temperature
     exp_preds = np.exp(preds)
     
-    preds = exp_preds / np.sum(exp_preds)   # ✅ FIXED LINE
+    preds = exp_preds / np.sum(exp_preds)   
     
     return np.random.choice(len(preds), p=preds)
 
@@ -173,15 +170,15 @@ while True:
 # ==============================
 # 12. Plot Loss
 # ==============================
-# plt.plot(history.history['loss'])
-# plt.title('Training Loss')
-# plt.xlabel('Epoch')
-# plt.ylabel('Loss')
-# plt.show()
+plt.plot(history.history['loss'])
+plt.title('Training Loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.show()
 
 
 # ==============================
 # 13. Save Model
 # ==============================
-# model.save("lstm_text_model.h5")
-# print("model saved")
+model.save("lstm_text_model.h5")
+print("model saved")
